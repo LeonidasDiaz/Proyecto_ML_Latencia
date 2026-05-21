@@ -1,0 +1,16 @@
+# Ignorar entorno virtual
+venv/
+
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar archivos del sistema
+.DS_Store
+
+# (Opcional por ahora) Ignorar datos procesados gigantes si los tuvieras
+# data/processed/
+
+.ubuntu-26.04-live-server-amd64.iso
