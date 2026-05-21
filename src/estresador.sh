@@ -13,7 +13,7 @@ echo "====================================================="
 # Definir la cantidad de ciclos (Cada ciclo dura 20 minutos en total)
 # 7 ciclos x 20 minutos = ~140 minutos (Tiempo suficiente para superar 1,600 pings)
 # Puedes ajustar este número según cuántas horas dejes el recolector encendido.
-TOTAL_CICLOS=10
+TOTAL_CICLOS=34
 
 for ((i=1; i<=TOTAL_CICLOS; i++))
 do
