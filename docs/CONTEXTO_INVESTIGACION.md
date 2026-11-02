@@ -58,6 +58,8 @@
 | 10 s | 1.90 | −0.35 |
 | 30 s | 1.82 | −0.23 |
 
+Nota: al reproducir el notebook, el R² a 5 s da −0.3281, que redondea a **−0.33**. El documento lo reporta como −0.32; es una diferencia de redondeo. Las demás métricas coinciden (ver [BITACORA.md](BITACORA.md), sección 2.10).
+
 **Clasificación de picos (umbral de 6.54 ms; 41 picos reales en 999 muestras de prueba).**
 
 | Modelo | Precisión | Recall | F1 | Accuracy |

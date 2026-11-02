@@ -32,7 +32,7 @@ Las horas del commit y de los archivos están en hora local de Windows (UTC−6)
 | 2026-05-23 01:29 | Termina el dataset 2 (5000 filas). | Última fila: `07:29:32` UTC |
 | 2026-05-23 06:56 | El dataset 2 llega a Windows como `registro_rendimiento2.csv`. Nunca se commiteó. | Fecha de modificación; `git status` |
 | Después del 2026-05-22 | El notebook se reescribe (sin commitear) para analizar el dataset 2: pasa de 10 a 26 celdas y agrega conclusiones. | `git diff` del notebook |
-| 2026-11-01 | El notebook se reproduce desde cero y todas las métricas coinciden con el documento final (sección 2.10). Se corrigen las conclusiones y se versiona por fin el dataset 2. | Commit de esa fecha |
+| 2026-11-01 | El notebook se reproduce desde cero y todas las métricas coinciden con el documento final, salvo una diferencia de redondeo en el R² de RF a 5 s (sección 2.10). Se corrigen las conclusiones y se versiona por fin el dataset 2. | Commit de esa fecha |
 
 ---
 
@@ -106,7 +106,7 @@ Esto sugiere que parte del código se escribió con ayuda externa, de un asisten
 
 ### 2.10 Reproducción del notebook (2026-11-01)
 
-**Reproducción desde cero.** El notebook se ejecutó de principio a fin con un kernel nuevo (equivalente a "Restart & Run All"), sin cambiar la lógica. Solo se eliminó la celda de `pip install`. Las 11 celdas de código se ejecutaron en orden y sin errores. **Todas las métricas coinciden con el documento final:**
+**Reproducción desde cero.** El notebook se ejecutó de principio a fin con un kernel nuevo (equivalente a "Restart & Run All"), sin cambiar la lógica. Solo se eliminó la celda de `pip install`. Las 11 celdas de código se ejecutaron en orden y sin errores. **Todas las métricas coinciden con el documento final, salvo el R² de Random Forest a 5 s:** da −0.3281, que redondea a −0.33, y el documento lo reporta como −0.32. Es una diferencia de redondeo.
 
 | Métrica | Documento | Reproducción |
 |---|---|---|
@@ -117,6 +117,7 @@ Esto sugiere que parte del código se escribió con ayuda externa, de un asisten
 | Umbral de pico | 6.54 ms | 6.5382 ms |
 | Matriz de confusión (XGBoost) | `[[876, 82], [30, 11]]` | `[[876, 82], [30, 11]]` |
 | RMSE a 5, 10 y 30 s (RF) | 1.88 / 1.90 / 1.82 ms | 1.8837 / 1.9008 / 1.8157 ms |
+| R² a 5, 10 y 30 s (RF) | −0.32 / −0.35 / −0.23 | **−0.3281** / −0.3523 / −0.2327 |
 
 **Confianza: alta.**
 
