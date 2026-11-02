@@ -36,18 +36,19 @@ bash estresador.sh         # terminal 2
 En Windows, para el análisis:
 ```powershell
 venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements-dev.txt
+jupyter execute --inplace notebooks/analisis.ipynb   # ejecuta todo desde cero; se lanza desde la raíz del repo
 ```
-El notebook se ejecuta desde VS Code con el kernel `venv`. `nbconvert` no está instalado, así que no se puede ejecutar por línea de comandos sin agregarlo antes.
+El notebook también se puede ejecutar desde VS Code con el kernel `venv`. Sus salidas y gráficos **se versionan a propósito**, porque es la pieza principal del portafolio. Tiene `"keep_output": true` en los metadatos para que nbstripout no las borre. No uses nbstripout ni limpies las salidas antes de commitear.
 
 No hay tests, linter ni build.
 
 ## Trampas que no se ven en el código
 
-- **Dos datasets que no se pueden comparar.** `data/raw/registro_rendimiento.csv` (dataset 1, 10 000 filas) se midió con **ping ICMP** al loopback, usando una versión anterior de `recolector.py`; verlo con `git show bd720dc:src/recolector.py`. Se descartó. El dataset oficial es `registro_rendimiento2.csv` (HTTP, 5000 filas). Ese archivo aún no está commiteado y es el que lee el notebook.
+- **Dos datasets que no se pueden comparar.** `data/raw/registro_rendimiento.csv` (dataset 1, 10 000 filas) se midió con **ping ICMP** al loopback, usando una versión anterior de `recolector.py`; verlo con `git show bd720dc:src/recolector.py`. Se descartó. El dataset oficial es `registro_rendimiento2.csv` (HTTP, 5000 filas), y es el que lee el notebook.
 - **El recolector sobrescribe** el CSV al arrancar (lo abre en modo `'w'`), y siempre con el nombre `registro_rendimiento.csv`.
 - **`Latencia_ms == 0.0` significa error o timeout,** no una latencia real. Los datasets actuales no tienen ningún 0.0.
 - **`Timestamp` está en el reloj de la VM, que es UTC.** La hora local del autor es UTC−6.
-- **`requirements.txt`** está codificado en UTF-16 (sale de `pip freeze` en PowerShell) y le falta `requests`. Solo cubre el entorno de análisis en Windows. En la VM se usaron los paquetes del sistema `python3-requests` y `python3-psutil`.
+- **`requirements.txt`** está codificado en UTF-16 (sale de `pip freeze` en PowerShell). Si lo editas, conserva UTF-16 y CRLF. Solo cubre el entorno de análisis en Windows. En la VM se usaron los paquetes del sistema `python3-requests` y `python3-psutil`.
 - **Los resultados del notebook son los que cita el documento final:** R² de −0.23 (RF) y −0.71 (XGB), y recall de picos de 0.27. Si vuelves a ejecutar el notebook y cambian, avisa antes de reemplazarlos.
 - **21 vs 23 ciclos no es un error.** El documento reporta 21 ciclos y el código tiene `TOTAL_CICLOS=23`. El recolector se detuvo a las 5000 muestras, antes de los ciclos 22 y 23, y en el dataset 2 se ven exactamente 21 episodios de estrés. No "corrijas" ninguno de los dos valores.

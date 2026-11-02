@@ -32,6 +32,7 @@ Las horas del commit y de los archivos están en hora local de Windows (UTC−6)
 | 2026-05-23 01:29 | Termina el dataset 2 (5000 filas). | Última fila: `07:29:32` UTC |
 | 2026-05-23 06:56 | El dataset 2 llega a Windows como `registro_rendimiento2.csv`. Nunca se commiteó. | Fecha de modificación; `git status` |
 | Después del 2026-05-22 | El notebook se reescribe (sin commitear) para analizar el dataset 2: pasa de 10 a 26 celdas y agrega conclusiones. | `git diff` del notebook |
+| 2026-11-01 | El notebook se reproduce desde cero y todas las métricas coinciden con el documento final (sección 2.10). Se corrigen las conclusiones y se versiona por fin el dataset 2. | Commit de esa fecha |
 
 ---
 
@@ -82,11 +83,11 @@ El comentario de `estresador.sh` dice "7 ciclos × 20 minutos = ~140 minutos (Ti
 
 ### 2.7 Contradicciones entre las conclusiones y los datos
 
-Las conclusiones de la versión actual del notebook (celda 25) no coinciden con los datos:
+Las conclusiones de la versión reescrita del notebook (la celda de conclusiones) no coincidían con los datos:
 
-- Dicen "recall 0.29", pero la salida de la celda 18 muestra **0.27**.
-- Dicen "latencia máxima ~6.5 ms", pero la máxima del dataset 2 es **35.28 ms**. 6.54 ms es el umbral de pico, no el máximo.
-- Dicen que la latencia "apenas se degradó bajo estrés". En el dataset 2, la mediana de latencia es de **4.26 ms con CPU ≥ 90 %** y de **1.69 ms en reposo**, unas 2.5 veces más.
+- Decían "recall 0.29", pero la salida muestra **0.27**. **Corregido el 2026-11-01.**
+- Decían "latencia máxima ~6.5 ms", pero la máxima del dataset 2 es **35.28 ms**. 6.54 ms es el umbral de pico, no el máximo. **Corregido el 2026-11-01:** ahora dice "umbral de pico 6.54 ms; máximo observado 35.28 ms".
+- Dicen que la latencia "apenas se degradó bajo estrés". Esta frase se mantiene porque es la conclusión del documento final, pero los datos la matizan (sección 2.10).
 
 ### 2.8 Pistas sobre cómo se escribió el código
 
@@ -102,6 +103,24 @@ Esto sugiere que parte del código se escribió con ayuda externa, de un asisten
 - Los huecos **no** ocurren durante el estrés. En todas esas filas la CPU es menor al 90 % y la mayoría están en los 15 min posteriores a un episodio de estrés.
 - No hay ningún valor `0.0` de latencia, así que no fueron pings fallidos registrados como error.
 - La causa no se puede deducir (pregunta abierta P6).
+
+### 2.10 Reproducción del notebook (2026-11-01)
+
+**Reproducción desde cero.** El notebook se ejecutó de principio a fin con un kernel nuevo (equivalente a "Restart & Run All"), sin cambiar la lógica. Solo se eliminó la celda de `pip install`. Las 11 celdas de código se ejecutaron en orden y sin errores. **Todas las métricas coinciden con el documento final:**
+
+| Métrica | Documento | Reproducción |
+|---|---|---|
+| R² Random Forest | −0.23 | −0.2327 |
+| R² XGBoost | −0.71 | −0.7050 |
+| Recall de picos (XGBoost sin balanceo) | 0.27 | 0.27 |
+| Recall de picos (RF balanceado) | 0.00 | 0.00 |
+| Umbral de pico | 6.54 ms | 6.5382 ms |
+| Matriz de confusión (XGBoost) | `[[876, 82], [30, 11]]` | `[[876, 82], [30, 11]]` |
+| RMSE a 5, 10 y 30 s (RF) | 1.88 / 1.90 / 1.82 ms | 1.8837 / 1.9008 / 1.8157 ms |
+
+**Confianza: alta.**
+
+**La latencia sí se degradó bajo estrés.** En el dataset 2, la mediana de latencia es de **4.26 ms** en las muestras con CPU ≥ 90 % y de **1.69 ms** en el resto, unas **2.5 veces más**. El máximo observado es 35.28 ms. Esto matiza la conclusión del documento y del notebook de que la latencia "apenas se degradó": el aumento relativo es claro, aunque en valores absolutos siga siendo de pocos milisegundos. **Confianza: alta** en las cifras. Si el aumento es "poco" o "mucho" es una cuestión de interpretación que no corresponde a esta bitácora.
 
 ---
 
